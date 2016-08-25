@@ -19,9 +19,11 @@ public class MainApplication {
 
 	public static void main(String[] args) {
 		try {
+			// Reading the content of the file
 			List<String> lines = BeautifulStringUtils.getInstance().readFile(FILE_NAME);
 			for (String line : lines) {
 				System.out.println(line);
+				// Calculating the score and printing the result
 				System.out.println("Score: " + BeautifulStringUtils.getInstance().calculateScore(line));
 			}
 		} catch (URISyntaxException | IOException e) {
