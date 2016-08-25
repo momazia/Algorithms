@@ -1,5 +1,11 @@
 package com.algorithms.main;
 
+/**
+ * A POJO to hold the result of the application.
+ * 
+ * @author Max
+ *
+ */
 public class Alphabet {
 
 	private char chr;
