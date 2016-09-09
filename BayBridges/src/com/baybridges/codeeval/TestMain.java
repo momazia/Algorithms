@@ -16,8 +16,6 @@ import com.baybridges.codeeval.Main.Point;
 
 public class TestMain {
 
-	private static final double DELTA = 1e-15;
-
 	@Test
 	public void test_convertToLine() {
 		Line line = Main.convertToLine("1: ([37.788353, -122.387695], [37.829853, -122.294312])");
