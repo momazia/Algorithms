@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Main application to be executed for solving Bay Bridges program.
+ * 
  * @author Max
  *
  */
@@ -58,8 +60,18 @@ public class Main {
 				return -Integer.compare(o1.getNumOfLinesCrossed(), o2.getNumOfLinesCrossed());
 			}
 		});
-		// Going through the lines and removing the ones which highest number of
-		// lines crossed until lines are crossing each other.
+		removeCrossingLines(lines);
+		List<Integer> results = getLineNames(lines);
+		return results;
+	}
+
+	/**
+	 * Goes through the lines and removing the ones with highest number of lines
+	 * crossed until no lines are crossing each other.
+	 * 
+	 * @param lines
+	 */
+	private static void removeCrossingLines(List<Line> lines) {
 		Iterator<Line> iterator = lines.iterator();
 		while (iterator.hasNext()) {
 			Line line = iterator.next();
@@ -71,8 +83,6 @@ public class Main {
 				break;
 			}
 		}
-		List<Integer> results = getLineNames(lines);
-		return results;
 	}
 
 	/**

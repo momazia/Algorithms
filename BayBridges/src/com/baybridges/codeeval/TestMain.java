@@ -52,7 +52,7 @@ public class TestMain {
 	public void test_RealInput() {
 		List<Line> lines = new ArrayList<>();
 		try {
-			List<String> readAllLines = Files.readAllLines(Paths.get("../BayBridges/io/sample3.txt"));
+			List<String> readAllLines = Files.readAllLines(Paths.get("../BayBridges/io/sample4.txt"));
 			for (String line : readAllLines) {
 				lines.add(Main.convertToLine(line));
 			}
