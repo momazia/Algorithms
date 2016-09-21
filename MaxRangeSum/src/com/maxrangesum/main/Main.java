@@ -2,6 +2,12 @@ package com.maxrangesum.main;
 
 import java.io.*;
 
+/**
+ * Main class running the algorithm.
+ * 
+ * @author Max
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) throws IOException {
@@ -13,17 +19,41 @@ public class Main {
 			line = line.trim();
 			// Process line of input Here
 			Entry entry = readFile(line);
-			findMaxCrossingSubArray(entry, 0, entry.getValues().length);
+			System.out.println(findMaxGain(entry));
 		}
 	}
 
-	private static int findMaxCrossingSubArray(Entry entry, int low, int high) {
-		if (low == high){
-			return entry.getValues()[low];
+	/**
+	 * Finds the max gain for the given entry.
+	 * 
+	 * @param entry
+	 * @return
+	 */
+	public static int findMaxGain(Entry entry) {
+		int[] values = entry.getValues();
+		int valuesLength = values.length;
+		int maxGain = 0; // Initializing the maxGain with value zero since that is the minimum expected result.
+		// Goes through the array of the values by looking at a window of size
+		// NumOfDays.
+		for (int i = 0; i <= valuesLength - entry.getNumOfDays(); i++) {
+			int sum = 0;
+			for (int j = i; j < i + entry.getNumOfDays(); j++) {
+				sum += values[j];
+			}
+			// Keeping the maximum gain.
+			if (sum > maxGain) {
+				maxGain = sum;
+			}
 		}
-		return 0;
+		return maxGain;
 	}
 
+	/**
+	 * Reads the line of file given and converts it into an Entry object.
+	 * 
+	 * @param line
+	 * @return
+	 */
 	public static Entry readFile(String line) {
 		int indexOfSemiColen = line.indexOf(";");
 		int numOfDays = Integer.valueOf(line.substring(0, indexOfSemiColen));
@@ -35,11 +65,16 @@ public class Main {
 		return new Main().new Entry(numOfDays, values);
 	}
 
+	/**
+	 * A POJO to contain the data stored in the input file.
+	 * 
+	 * @author Max
+	 *
+	 */
 	public class Entry {
 
 		private int numOfDays;
 		private int[] values;
-		private int result;
 
 		public Entry(int numOfDays, int[] values) {
 			this.numOfDays = numOfDays;
@@ -60,14 +95,6 @@ public class Main {
 
 		public void setValues(int[] values) {
 			this.values = values;
-		}
-
-		public int getResult() {
-			return result;
-		}
-
-		public void setResult(int result) {
-			this.result = result;
 		}
 
 	}
