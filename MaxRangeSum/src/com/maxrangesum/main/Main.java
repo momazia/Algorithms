@@ -13,7 +13,15 @@ public class Main {
 			line = line.trim();
 			// Process line of input Here
 			Entry entry = readFile(line);
+			findMaxCrossingSubArray(entry, 0, entry.getValues().length);
 		}
+	}
+
+	private static int findMaxCrossingSubArray(Entry entry, int low, int high) {
+		if (low == high){
+			return entry.getValues()[low];
+		}
+		return 0;
 	}
 
 	public static Entry readFile(String line) {
