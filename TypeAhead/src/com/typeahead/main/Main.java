@@ -15,13 +15,13 @@ import java.util.Map.Entry;
 public class Main {
 
 	private static final String WHITE_SPACE = " ";
-	private static final String INPUT_TEXT = "Mary had a little lamb its fleece was white as snow;" + "And everywhere that Mary went, the lamb was sure to go."
+	public static final String INPUT_TEXT = "Mary had a little lamb its fleece was white as snow;" + "And everywhere that Mary went, the lamb was sure to go."
 			+ "It followed her to school one day, which was against the rule;" + "It made the children laugh and play, to see a lamb at school."
 			+ "And so the teacher turned it out, but still it lingered near," + "And waited patiently about till Mary did appear."
 			+ "\"Why does the lamb love Mary so?\" the eager children cry; \"Why, Mary loves the lamb, you know\" the teacher did reply.\"";
 	private static final char SPACE_CHAR = ' ';
-	private static final String[] WORDS = removeSpecialCharacters(INPUT_TEXT);
-	private static DecimalFormat df = new DecimalFormat("#.000");
+	private static final String[] WORDS = split(INPUT_TEXT);
+	private static DecimalFormat df = new DecimalFormat("#0.000");
 
 	public static void main(String[] args) throws IOException {
 		File file = new File(args[0]);
@@ -33,7 +33,7 @@ public class Main {
 			// Process line of input Here
 			Input input = readInput(line);
 			process(input);
-			System.out.println(line);
+			System.out.println();
 		}
 	}
 
@@ -41,16 +41,19 @@ public class Main {
 	 * Runs ngram algorithm on INPUT_TEXT using the input passed.
 	 * 
 	 * @param input
+	 * @return
 	 */
-	public static void process(Input input) {
+	public static boolean process(Input input) {
 		String text = input.getText();
 		int ngram = input.getNgram();
 		int totalNumOfOccurrences = 0;
 		Map<String, Integer> result = new HashMap<>();
 		for (int i = 0; i < WORDS.length; i++) {
-			if (text.equals(WORDS[i])) {
+			// Finding the number of words based on the spaces in text
+			String[] texts = split(text);
+			if (isSame(texts, i, WORDS)) {
 				totalNumOfOccurrences++;
-				String key = String.join(" ", getNextWords(i, ngram)); // Key is the next ngram words
+				String key = String.join(" ", getNextWords(i, texts.length, ngram)); // Key is the next ngram words
 				if (result.containsKey(key)) {
 					// Increment by one
 					result.put(key, result.get(key) + 1);
@@ -75,21 +78,44 @@ public class Main {
 		});
 
 		// Printing the final result
+		List<String> finalResult = new ArrayList<>();
 		for (Entry<String, Integer> entry : resultList) {
-			System.out.print(entry.getKey() + "," + df.format((double) entry.getValue() / totalNumOfOccurrences) + ";");
+			finalResult.add(entry.getKey() + "," + df.format((double) entry.getValue() / totalNumOfOccurrences));
 		}
+		System.out.print(String.join(";", finalResult));
+		return finalResult.size() > 0;
+	}
+
+	/**
+	 * Checks the words in text to see if they match the words at i'th index in words.
+	 * 
+	 * @param texts
+	 * @param i
+	 * @param words
+	 * @return
+	 */
+	public static boolean isSame(String[] texts, int i, final String[] words) {
+		// Checking all the words to make sure they are the same
+		for (int j = 0; j < texts.length; j++) {
+			if (!texts[j].equals(words[i + j])) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
 	 * Gets the next ngram words starting from index. The data comes from WORDS.
 	 * 
 	 * @param index
+	 * @param textsLength
+	 *            Length of the words in the search phrase
 	 * @param ngram
 	 * @return
 	 */
-	private static List<String> getNextWords(int index, int ngram) {
+	private static List<String> getNextWords(int index, int textsLength, int ngram) {
 		List<String> result = new ArrayList<>();
-		for (int i = index + 1; i < WORDS.length && i < index + ngram; i++) {
+		for (int i = index + textsLength; i < WORDS.length && i < index + textsLength + Math.abs(ngram - textsLength); i++) {
 			result.add(WORDS[i]);
 		}
 		return result;
@@ -114,15 +140,23 @@ public class Main {
 	 * @param string
 	 * @return
 	 */
-	public static String[] removeSpecialCharacters(String string) {
+	public static String[] split(String string) {
 		StringBuffer result = new StringBuffer();
 		char[] charArray = string.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
 			if (Character.isAlphabetic(charArray[i]) || charArray[i] == SPACE_CHAR) {
 				result.append(charArray[i]);
-			} else if (i < charArray.length - 1 && Character.isAlphabetic(charArray[i + 1])) {
-				// For the case where the two words are separated with special characters.
-				result.append(WHITE_SPACE);
+			} else {
+				// Skipping non alphabetic characters
+				int j = i;
+				while (j < charArray.length) {
+					if (Character.isAlphabetic(charArray[j])) {
+						break;
+					}
+					j++;
+				}
+				result.append(SPACE_CHAR);
+				i = j - 1;
 			}
 		}
 		return result.toString().split(WHITE_SPACE);
