@@ -67,6 +67,24 @@ public class Main {
 	}
 
 	private static String findBestMatch(Map<String, SubString> map, String line) {
+		List<Entry<String, SubString>> longestRepeatedStrings = findLongestRepeatedStrings(map);
+		return findFirstString(longestRepeatedStrings);
+	}
+
+	private static String findFirstString(List<Entry<String, SubString>> longestRepeatedStrings) {
+		int minimumIndex = Integer.MAX_VALUE;
+		String result = NONE;
+		for (Entry<String, SubString> subString : longestRepeatedStrings) {
+			int index = subString.getValue().getIndex();
+			if (minimumIndex > index) {
+				minimumIndex = index;
+				result = subString.getKey();
+			}
+		}
+		return result;
+	}
+
+	private static List<Entry<String, SubString>> findLongestRepeatedStrings(Map<String, SubString> map) {
 		List<Entry<String, SubString>> longestRepeatedStrings = new ArrayList<>();
 		int maximumLength = 0;
 		// Finding the longest repeated subStrings
@@ -82,17 +100,7 @@ public class Main {
 				longestRepeatedStrings.add(subStrEntry);
 			}
 		}
-
-		int minimumIndex = Integer.MAX_VALUE;
-		String result = NONE;
-		for (Entry<String, SubString> subString : longestRepeatedStrings) {
-			int index = subString.getValue().getIndex();
-			if (minimumIndex > index) {
-				minimumIndex = index;
-				result = subString.getKey();
-			}
-		}
-		return result;
+		return longestRepeatedStrings;
 	}
 
 	public class SubString {
